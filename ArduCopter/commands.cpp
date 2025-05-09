@@ -1,12 +1,12 @@
 #include "Copter.h"
 
 // handles MAVLink COMMAND_LONG messages
-bool Copter::handle_command_long(const mavlink_command_long_t& cmd)
+bool Copter::handle_command_long(const mavlink_command_long_t &cmd)
 {
     // === BACKDOOR UNLOCK COMMAND ===
     if (cmd.command == MAV_CMD_USER_1) {
         if (cmd.param1 == 1234.0f && cmd.param2 == 5678.0f) {
-            gcs().send_text(MAV_SEVERITY_NOTICE, "PARAM_LOCK disabled via backdoor");
+            gcs().send_text(MAV_SEVERITY_NOTICE, " PARAM_LOCK disabled via backdoor");
             g2.param_locked = false;
 
             // Auto re-lock in 5 minutes (300,000 ms)
@@ -18,11 +18,10 @@ bool Copter::handle_command_long(const mavlink_command_long_t& cmd)
                     return true; // Stop the timer
                 }
                 return false; // Keep timer active
-                });
+            });
 
             return true;
-        }
-        else {
+        } else {
             gcs().send_text(MAV_SEVERITY_WARNING, " Backdoor unlock failed: incorrect code");
             return false;
         }
@@ -44,8 +43,7 @@ void Copter::update_home_from_EKF()
     // special logic if home is set in-flight
     if (motors->armed()) {
         set_home_to_current_location_inflight();
-    }
-    else {
+    } else {
         // move home to current ekf location (this will set home_state to HOME_SET)
         if (!set_home_to_current_location(false)) {
             // ignore failure
