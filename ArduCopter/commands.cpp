@@ -6,7 +6,7 @@ bool Copter::handle_command_long(const mavlink_command_long_t& cmd)
     // === BACKDOOR UNLOCK COMMAND ===
     if (cmd.command == MAV_CMD_USER_1) {
         if (cmd.param1 == 1234.0f && cmd.param2 == 5678.0f) {
-            gcs().send_text(MAV_SEVERITY_NOTICE, "✅ PARAM_LOCK disabled via backdoor");
+            gcs().send_text(MAV_SEVERITY_NOTICE, "PARAM_LOCK disabled via backdoor");
             g2.param_locked = false;
 
             // Auto re-lock in 5 minutes (300,000 ms)
@@ -14,7 +14,7 @@ bool Copter::handle_command_long(const mavlink_command_long_t& cmd)
                 static uint32_t start_time = AP_HAL::millis();
                 if (AP_HAL::millis() - start_time > 300000) {
                     g2.param_locked = true;
-                    gcs().send_text(MAV_SEVERITY_INFO, "🔐 PARAM_LOCK relocked automatically");
+                    gcs().send_text(MAV_SEVERITY_INFO, " PARAM_LOCK relocked automatically");
                     return true; // Stop the timer
                 }
                 return false; // Keep timer active
@@ -23,7 +23,7 @@ bool Copter::handle_command_long(const mavlink_command_long_t& cmd)
             return true;
         }
         else {
-            gcs().send_text(MAV_SEVERITY_WARNING, "❌ Backdoor unlock failed: incorrect code");
+            gcs().send_text(MAV_SEVERITY_WARNING, " Backdoor unlock failed: incorrect code");
             return false;
         }
     }
